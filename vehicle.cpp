@@ -66,3 +66,31 @@ void Vehicle::display() const
     cout << "Price per KM: " << this->pricePerKm << endl;
     cout << "PUC Expiration Date: " << this->PUCEpirationDate.toString() << endl;
 }
+string Vehicle ::toString() const
+{
+    stringstream ss;
+    ss << recordId << DELIMITER
+       << registrationNumber << DELIMITER
+       << type << DELIMITER
+       << seats << DELIMITER
+       << companyName << DELIMITER
+       << to_string(pricePerKm) << DELIMITER
+       << PUCEpirationDate.toString();
+
+    return ss.str();
+}
+void Vehicle ::setDataFrom(storable *s)
+{
+    /* The line `Vehicle * v = dynamic_cast<Vehicle*> (s);` is performing a dynamic cast of the pointer
+    `s` to a `Vehicle` pointer. */
+    Vehicle *v = dynamic_cast<Vehicle *>(s);
+    if (v)
+    {
+        this->registrationNumber = v->registrationNumber;
+        this->type = v->type;
+        this->seats = v->seats;
+        this->companyName = v->companyName;
+        this->pricePerKm = v->pricePerKm;
+        this->PUCEpirationDate = v->PUCEpirationDate;
+    }
+}
