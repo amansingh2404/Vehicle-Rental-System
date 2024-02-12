@@ -22,7 +22,7 @@ private:
     // Database have multiple tables
 
     // Vehicle table
-    Table<Vehicle> *VehicleTable;
+    Table<Vehicle> *vehicleTable;
 
     // User table
     Table<User> *userTable;
