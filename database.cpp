@@ -154,4 +154,94 @@ void Database ::fetchAllTrip() throw(IOError, MemoryError)
     this->tripTable->fileStream.close();
 }
 
+const Vehicle *const Database ::getVehichle(string registrationNo) const throw(NoSuchRecordError)
+{
+    for (auto &record : *this->vehicleTable->records)
+    {
+        Vehicle *vehicle = dynamic_cast<Vehicle *>(record);
+        if (vehicle)
+        {
+            if (vehicle->getRegistrationNumber() == registrationNo)
+            {
+                return vehicle;
+            }
+        }
+    }
+    throw NoSuchRecordError();
+}
+
+const User *const Database ::getUser(string contactNo) const throw(NoSuchRecordError)
+{
+    for (auto &record : *this->userTable->records)
+    {
+        User *user = dynamic_cast<User *>(record);
+        if (user)
+        {
+            if (user->getContact() == contactNo)
+            {
+                return user;
+            }
+        }
+    }
+    throw NoSuchRecordError();
+}
+
+const vector<const Vehicle *> Database ::getVehichle(Date startDate, Date endDate, VehicleType type) const
+{
+    vector<const Vehicle *> vehicles = vector<const Vehicle *>();
+
+    for (auto &vrecord : *this->vehicleTable->records)
+    {
+        Vehicle *vehicle = dynamic_cast<Vehicle *>(vrecord);
+        if (vehicle && vehicle->getVehicleType() == type)
+        {
+            // Check if vehicle is free from startDate to endDate
+            bool tripFound = false;
+            for (auto &trecord : *this->tripTable->records)
+            {
+                Trip *trip = dynamic_cast<Trip *>(trecord);
+
+                if (trip && !trip->isCompleted() && trip->getVehicle().getRecordId() == vehicle->getRecordId() &&
+                    !(trip->getStartDate() >= endDate && trip->getEndDate() >= endDate) &&
+                    !(trip->getStartDate() <= startDate && trip->getEndDate() <= startDate)
+
+                )
+                {
+                    tripFound = true;
+                    break;
+                }
+            }
+            if (!tripFound)
+            {
+                vehicles.push_back(vehicle);
+            }
+        }
+    }
+    return vehicles;
+}
+
+void Database ::cleanUp()
+{
+    delete this->vehicleTable;
+    delete this->userTable;
+    delete this->tripTable;
+}
+
+Database::~Database()
+{
+    this->cleanUp();
+}
+const Table<Vehicle> *const Database ::getVehichleRef() const
+{
+    return this->vehicleTable;
+}
+const Table<User> *const Database ::getUserRef() const
+{
+    return this->userTable;
+}
+const Table<Trip> *const Database ::getTripRef() const
+{
+    return this->tripTable;
+}
+const
 #endif
