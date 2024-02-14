@@ -243,5 +243,4 @@ const Table<Trip> *const Database ::getTripRef() const
 {
     return this->tripTable;
 }
-const
 #endif
